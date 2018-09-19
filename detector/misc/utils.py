@@ -16,9 +16,9 @@ def plot_key_points(im_rgb, xs, ys, radius=4):
     color = (0, 255, 0)
     count = 0
     for x, y in zip(xs, ys):
-        cv2.circle(im_rgb, (x, y),
+        cv2.circle(im_rgb, (int(x), int(y)),
                    radius, color, thickness=2)
-        cv2.putText(im_rgb, str(count), (x, y), cv2.FONT_HERSHEY_PLAIN,
+        cv2.putText(im_rgb, str(count), (int(x), int(y)), cv2.FONT_HERSHEY_PLAIN,
                     1, (255, 255, 255), 1)
         count += 1
     return im_rgb

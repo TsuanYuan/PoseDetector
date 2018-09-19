@@ -797,8 +797,10 @@ def unmold_keypoint_mask(keypoints_prob, bbox, image_shape, mask, keypoint_mask_
     J_y = np.array(y_scale * J_y + 0.5).astype(int) + y_shift
     # print("J_x", J_x)
     # print("J_y",J_y)
+    J_s = np.array(keypoint_score)
     J_v = np.array(keypoint_score > keypoint_threshold).astype(int)
-    keypoints = np.stack([J_x,J_y,J_v],axis=1)
+
+    keypoints = np.stack([J_x,J_y,J_v, J_s],axis=1)
 
     # print("J_v",J_v)
     full_mask = unmold_mask(mask,bbox,image_shape)
