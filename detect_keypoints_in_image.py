@@ -8,6 +8,7 @@ import argparse
 import detector.maskrcnn_detector as maskrcnn
 import detector.misc.utils as utils
 import cv2
+import numpy
 
 if __name__ == "__main__":
     # construct the argument parse and parse the arguments
@@ -19,7 +20,11 @@ if __name__ == "__main__":
     model = maskrcnn.load_model(args.model_file, args.output_folder)
     image_rgb = utils.read_one_image(args.image_file)
     results = maskrcnn.detect_keypoints_one_image(model, image_rgb)
-    image_result = utils.plot_key_points(image_rgb, results[:,0], results[:,1])
+    n = results.shape[0]
+    image_result = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2BGR)
+    for k in range(n):
+        result = numpy.squeeze(results[k, :, :])
+        image_result = utils.plot_key_points(image_result, results[k, :, 0], results[k, :, 1])
     cv2.imshow('w', image_result)
     cv2.waitKey()
     pass
