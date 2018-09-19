@@ -23,6 +23,6 @@ def load_model(model_path, log_dir):
 def detect_keypoints_one_image(model, image_rgb):
 
     results = model.detect_keypoint([image_rgb], verbose=0)
-    r = results[0]  # for one image
-    return numpy.squeeze(r['keypoints'])
+    key_points = numpy.array([result['keypoints'] for result in results])  # for one image
+    return key_points
     #return r['rois'], r['keypoints'], r['masks'], r['class_ids'], r['scores']
