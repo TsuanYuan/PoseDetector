@@ -9,8 +9,7 @@ from .misc import dependency as dependency
 import numpy
 
 
-def load_model(model_path, log_dir):
-    inference_config = dependency.InferenceConfig()
+def load_model(model_path, log_dir, inference_config):
     # Recreate the model in inference mode
     model = modellib.MaskRCNN(mode="inference",
                               config=inference_config,
