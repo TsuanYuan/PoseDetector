@@ -7,6 +7,7 @@ Quan Yuan
 import argparse
 import detector.maskrcnn_detector as maskrcnn
 import detector.misc.utils as utils
+import detector.misc.dependency as dependency
 import detector.models.parallel_model as parallel_model
 import cv2
 import numpy
@@ -19,11 +20,16 @@ if __name__ == "__main__":
     ap.add_argument("output_folder", type=str, help="path to output folder")
     ap.add_argument("--gpu_count", type=int, default=0, help="how many gpu to use")
     args = ap.parse_args()
-    model = maskrcnn.load_model(args.model_file, args.output_folder)
+
+
+    inference_config = dependency.InferenceConfig()
+    inference_config.GPU_COUNT = args.gpu_count
+    model = maskrcnn.load_model(args.model_file, args.output_folder, inference_config)
+
     # if args.gpu_count > 0:
     #     model = parallel_model.ParallelModel(model, gpu_count=args.gpu_count)
     image_rgb = utils.read_one_image(args.image_file)
-    #results = maskrcnn.detect_keypoints_one_image(model, image_rgb)
+    results = maskrcnn.detect_keypoints_one_image(model, image_rgb)
     n = results.shape[0]
     image_result = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2BGR)
     for k in range(n):
