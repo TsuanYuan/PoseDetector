@@ -26,3 +26,9 @@ def detect_keypoints_one_image(model, image_rgb):
     key_points = numpy.array([result['keypoints'] for result in results])  # for one image
     return key_points
     #return r['rois'], r['keypoints'], r['masks'], r['class_ids'], r['scores']
+
+def detect_keypoints_images(model, images_rgb):
+
+    results = model.detect_keypoint(images_rgb, verbose=0)
+    key_points = numpy.array([result['keypoints'] for result in results])  # for one image
+    return key_points

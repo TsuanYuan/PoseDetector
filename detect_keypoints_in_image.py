@@ -20,10 +20,10 @@ if __name__ == "__main__":
     ap.add_argument("--gpu_count", type=int, default=0, help="how many gpu to use")
     args = ap.parse_args()
     model = maskrcnn.load_model(args.model_file, args.output_folder)
-    if args.gpu > 0:
-        model = parallel_model.ParallelModel(model, gpu_count=args.gpu_count)
+    # if args.gpu_count > 0:
+    #     model = parallel_model.ParallelModel(model, gpu_count=args.gpu_count)
     image_rgb = utils.read_one_image(args.image_file)
-    results = maskrcnn.detect_keypoints_one_image(model, image_rgb)
+    #results = maskrcnn.detect_keypoints_one_image(model, image_rgb)
     n = results.shape[0]
     image_result = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2BGR)
     for k in range(n):
