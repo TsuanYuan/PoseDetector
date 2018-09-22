@@ -14,6 +14,7 @@ import collections
 import detector.misc.dependency as dependency
 import pickle
 
+
 def get_key_points_in_split(model, split_data, data_folder, keys, batch_size=64):
     keypoints = {}
     for i, key in enumerate(keys):
@@ -29,7 +30,7 @@ def get_key_points_in_split(model, split_data, data_folder, keys, batch_size=64)
             image = data_binary.read_one_image(data_file, offset)
             images.append(image)
             if len(images) >= batch_size or i==len(line)-1:
-                keypoints_batch = model.compute_features_on_batch(numpy.array(images))
+                keypoints_batch = maskrcnn.detect_keypoints_images(model, numpy.array(images))
                 keypoints_row += keypoints_batch
                 images  = []
 
