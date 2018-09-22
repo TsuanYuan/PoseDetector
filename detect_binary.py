@@ -12,7 +12,7 @@ import cv2
 import numpy
 import collections
 import detector.misc.dependency as dependency
-
+import pickle
 
 def get_key_points_in_split(model, split_data, data_folder, keys, batch_size=64):
     keypoints = {}
@@ -86,3 +86,9 @@ if __name__ == "__main__":
     model = maskrcnn.load_model(args.model_file, args.output_folder, inference_config)
 
     keypoints = get_key_points_in_split(model, pid_data, args.data_folder, pids, batch_size=args.batch_size)
+    output_file = os.path.join(args.output_folder, 'keypoints.pkl')
+    if os.path.isdir(args.output_folder) == False:
+        os.makedirs(args.output_folder)
+    with open(output_file, 'wb') as fp:
+        pickle.dump(keypoints,fp, pickle.HIGHEST_PROTOCOL)
+    print("keypoints results dumped to {}".format(output_file))
