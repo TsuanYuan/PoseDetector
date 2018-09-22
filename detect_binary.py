@@ -83,7 +83,7 @@ if __name__ == "__main__":
     inference_config.GPU_COUNT = args.gpu_count
     inference_config.BATCH_SIZE = args.batch_size
     print("detect keypoints with {} gpus and batch size of {}".format(str(args.gpu_count), str(args.batch_size)))
-    model = maskrcnn.load_model(args.model_file, args.output_folder, inference_config)
+    model = maskrcnn.load_model(args.model_path, args.output_folder, inference_config)
 
     keypoints = get_key_points_in_split(model, pid_data, args.data_folder, pids, batch_size=args.batch_size)
     output_file = os.path.join(args.output_folder, 'keypoints.pkl')

@@ -36,7 +36,7 @@ if __name__ == "__main__":
     image_result = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2BGR)
     for k in range(n):
         result = results[k, :]
-        image_result = utils.plot_key_points(image_result, result[0, :, 0], results[0, :, 1])
+        image_result = utils.plot_key_points(image_result, result[0, :, 0], result[0, :, 1])
     cv2.imshow('w', image_result)
     cv2.waitKey()
     pass
