@@ -60,6 +60,7 @@ def get_key_points_in_split(model, split_data, data_folder, keys, batch_size=8, 
             if len(images) == w_count*h_count or i==len(line)-1:
                 collage = collage_images(images, w_count, h_count)
                 collages.append(collage)
+                images = []
             # put w_count*h_count crops in one collage and detect keypoints. decode the keypoints to the xy in each crop afterwards
             if len(collages) >= batch_size or i==len(line)-1:
                 keypoints_on_collages = maskrcnn.detect_keypoints_images(model, numpy.array(collages))
