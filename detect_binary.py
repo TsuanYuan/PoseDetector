@@ -44,7 +44,6 @@ def get_key_points_in_split(model, split_data, data_folder, keys, batch_size=8, 
     for m, key in enumerate(keys):
         line = split_data[key]
         images = []
-        keypoints_page = []
         collages = []
         count = 0
         keypoints_decode = collections.defaultdict(list)
@@ -80,7 +79,7 @@ def get_key_points_in_split(model, split_data, data_folder, keys, batch_size=8, 
                 collages = []
                 images = []
         #keypoints_batch = model.compute_features_on_batch(numpy.array(images))
-        keypoints[key] = keypoints_page
+        keypoints[key] = keypoints_decode
         if (m+1) % 20 == 0:
             print("finished computing descriptor of pid/track_id {} out of {}".format(str(m+1), str(len(split_data))))
     return keypoints
