@@ -31,6 +31,7 @@ def load_list_to_pid(list_file, data_folder, prefix, path_tail_len=2):
                     pid_index[label].append((data_file, within_idx))
     return pid_index
 
+
 def read_one_image(data_file_path, place):
     with open(data_file_path, 'rb') as f:
         f.seek(place + 4)
@@ -40,3 +41,9 @@ def read_one_image(data_file_path, place):
         img_bgr = cv2.imdecode(numpy.asarray(bytearray(f.read(img_len)), dtype="uint8"), cv2.IMREAD_COLOR)
         img = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
     return img
+
+
+def load_rgb_image(image_file):
+    im_bgr = cv2.imread(image_file)
+    im_rgb = cv2.cvtColor(im_bgr, cv2.COLOR_BGR2RGB)
+    return im_rgb
