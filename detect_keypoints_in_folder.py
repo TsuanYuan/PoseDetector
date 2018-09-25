@@ -57,7 +57,7 @@ def process_one_folder(model, folder, norm_shape=(128,256), w_count=8, h_count=4
     kp_file = os.path.join(folder, 'keypoints.pkl')
     with open(kp_file, 'wb') as fp:
         pickle.dump(keypoints, fp, protocol=pickle.HIGHEST_PROTOCOL)
-    print "keypoints results dumped to {}".format(kp_file)
+    print("keypoints results dumped to {}".format(kp_file))
 
 
 if __name__ == "__main__":
