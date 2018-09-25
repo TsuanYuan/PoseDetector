@@ -65,7 +65,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("folder", type=str, help="path to input image folder")
     ap.add_argument("model_file", type=str, help="path to model file")
-    ap.add_argument("--gpu_count", type=int, default=0, help="how many gpu to use")
+    ap.add_argument("--gpu_count", type=int, default=1, help="how many gpu to use")
     args = ap.parse_args()
 
     batch_size = 1
