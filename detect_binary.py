@@ -27,7 +27,7 @@ def collage_images(images, w_count, h_count, norm_shape=(128,256)):
 
 def decode_keypoints_on_collages(keypoints_on_one_collage, w_count, h_count, norm_shape=(128, 256)):
     # keypoints_on_one_collage = numpy.squeeze(keypoints_on_one_collage)
-    mean_xy = numpy.squeeze(numpy.mean(keypoints_on_one_collage, axis=1))[:, :2].astype(int)
+    mean_xy = numpy.mean(keypoints_on_one_collage, axis=1)[:, :2].astype(int)
     crop_idx = mean_xy[:, 1]/norm_shape[1]*w_count + mean_xy[:, 0]/norm_shape[0]
     keypoints = collections.defaultdict(list)
     n = keypoints_on_one_collage.shape[0]
