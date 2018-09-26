@@ -18,7 +18,11 @@ import collections
 import pickle
 
 
-def process_one_folder(model, folder, norm_shape=(128,256), w_count=8, h_count=4):
+def process_one_folder(model, folder, norm_shape=(128,256), w_count=8, h_count=4, force_compute=False):
+    kp_file = os.path.join(folder, 'keypoints.pkl')
+    if os.path.isfile(kp_file) and (not force_compute):
+        print("keypoints results {} exists. skip it.".format(kp_file))
+        return
     jpgs = glob.glob(os.path.join(folder, '*.jpg'))
     collages = []
     images, jpg_files, jpg_files_batch = [],[],[]
@@ -55,7 +59,7 @@ def process_one_folder(model, folder, norm_shape=(128,256), w_count=8, h_count=4
             images = []
             jpg_files = []
         #keypoints_batch = model.compute_features_on_batch(numpy.array(images))
-    kp_file = os.path.join(folder, 'keypoints.pkl')
+
     with open(kp_file, 'wb') as fp:
         pickle.dump(keypoints, fp, protocol=pickle.HIGHEST_PROTOCOL)
     print("keypoints results dumped to {}".format(kp_file))
@@ -67,6 +71,7 @@ if __name__ == "__main__":
     ap.add_argument("folder", type=str, help="path to input image folder")
     ap.add_argument("model_file", type=str, help="path to model file")
     ap.add_argument("--gpu_count", type=int, default=1, help="how many gpu to use")
+    ap.add_argument("--force_compute", action='store_true', default=False, help="force recompute keypoints.pkl")
     args = ap.parse_args()
 
     batch_size = 1
