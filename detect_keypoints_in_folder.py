@@ -28,6 +28,7 @@ def process_one_folder(model, folder, norm_shape=(128,256), w_count=8, h_count=4
     images, jpg_files, jpg_files_batch = [],[],[]
     keypoints_decode = collections.defaultdict(list)
     count = 0
+    images_counts = {}
     keypoints = {}
     for i, jpg_file in enumerate(jpgs):
         im_rgb = data_binary.load_rgb_image(jpg_file)
@@ -38,6 +39,7 @@ def process_one_folder(model, folder, norm_shape=(128,256), w_count=8, h_count=4
             collage = detect_binary.collage_images(images, w_count, h_count)
             collages.append(collage)
             pre_images = images
+            images_counts[len(collages)-1] = len(images)
             images = []
         if len(collages) >= batch_size or i==len(jpgs)-1:
             if len(collages)<batch_size:
@@ -47,7 +49,7 @@ def process_one_folder(model, folder, norm_shape=(128,256), w_count=8, h_count=4
 
             for k in range(batch_len):
                 keypoints_on_one_page = keypoints_on_collages[k]
-                keypoints_row = detect_binary.decode_keypoints_on_collages(keypoints_on_one_page, w_count, h_count, norm_shape)
+                keypoints_row = detect_binary.decode_keypoints_on_collages(keypoints_on_one_page, w_count, images_counts[k], norm_shape)
                 # j is the id of a patch in current one collage
                 for j in keypoints_row:
                     # global id = k*w_count*h_count+j
