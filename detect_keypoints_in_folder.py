@@ -48,7 +48,8 @@ def process_one_folder(model, folder, norm_shape=(128,256), w_count=8, h_count=4
                 for j in keypoints_row:
                     # global id = k*w_count*h_count+j
                     keypoints_decode[k*w_count*h_count+j]=keypoints_row[j]
-                    keypoints[jpg_files[k*w_count*h_count+j]] = keypoints_row[j]
+                    file_only = os.path.split(jpg_files[k*w_count*h_count+j])[1]
+                    keypoints[file_only] = keypoints_row[j]
             count += w_count * h_count * batch_size
             collages = []
             images = []
