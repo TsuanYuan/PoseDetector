@@ -25,7 +25,7 @@ def collage_images(images, w_count, h_count, norm_shape=(128,256)):
     return canvas
 
 
-def decode_keypoints_on_collages(keypoints_on_one_collage, w_count, h_count, norm_shape=(128, 256)):
+def decode_keypoints_on_collages(keypoints_on_one_collage, w_count, max_count, norm_shape=(128, 256)):
     # keypoints_on_one_collage = numpy.squeeze(keypoints_on_one_collage)
     mean_xy = numpy.mean(keypoints_on_one_collage, axis=1)[:, :2].astype(int)
     crop_idx = mean_xy[:, 1]/norm_shape[1]*w_count + mean_xy[:, 0]/norm_shape[0]
@@ -34,6 +34,8 @@ def decode_keypoints_on_collages(keypoints_on_one_collage, w_count, h_count, nor
     for i in range(n):
         col = crop_idx[i]%w_count
         row = crop_idx[i]/w_count
+        if crop_idx[i]+1 > max_count:
+            continue
         kp = numpy.squeeze(keypoints_on_one_collage[i, :])-numpy.array([norm_shape[0]*col, norm_shape[1]*row,0,0])
         keypoints[crop_idx[i]].append(kp / [norm_shape[0], norm_shape[1],1,1])
     return keypoints
@@ -44,6 +46,7 @@ def get_key_points_in_split(model, split_data, data_folder, keys, batch_size=8, 
     for m, key in enumerate(keys):
         line = split_data[key]
         images = []
+        image_counts = {}
         collages = []
         count = 0
         keypoints_decode = collections.defaultdict(list)
@@ -59,6 +62,7 @@ def get_key_points_in_split(model, split_data, data_folder, keys, batch_size=8, 
             if len(images) == w_count*h_count or i==len(line)-1:
                 collage = collage_images(images, w_count, h_count)
                 collages.append(collage)
+                image_counts[len(collages)-1] = len(images)
                 images = []
             # put w_count*h_count crops in one collage and detect keypoints. decode the keypoints to the xy in each crop afterwards
             # ignore the tail crops less than batch_size
@@ -70,7 +74,7 @@ def get_key_points_in_split(model, split_data, data_folder, keys, batch_size=8, 
 
                 for k in range(batch_len):
                     keypoints_on_one_page = keypoints_on_collages[k]
-                    keypoints_row = decode_keypoints_on_collages(keypoints_on_one_page, w_count, h_count, norm_shape)
+                    keypoints_row = decode_keypoints_on_collages(keypoints_on_one_page, w_count, image_counts[k], norm_shape)
                     # j is the id of a patch in current one collage
                     for j in keypoints_row:
                         # global id = k*w_count*h_count+j
