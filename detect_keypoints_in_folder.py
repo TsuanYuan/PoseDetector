@@ -88,4 +88,4 @@ if __name__ == "__main__":
     tps = []
     for sub_folder in sub_folders:
         sub_folder_full = os.path.join(args.folder, sub_folder)
-        process_one_folder(model, sub_folder_full)
+        process_one_folder(model, sub_folder_full, force_compute=args.force_compute)
