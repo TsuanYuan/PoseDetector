@@ -85,7 +85,7 @@ def get_key_points_in_split(model, split_data, data_folder, keys, batch_size=8, 
         #keypoints_batch = model.compute_features_on_batch(numpy.array(images))
         keypoints[key] = keypoints_decode
         if (m+1) % 20 == 0:
-            print("finished computing descriptor of pid/track_id {} out of {}".format(str(m+1), str(len(split_data))))
+            print("finished computing keypoints of pid/track_id {} out of {}".format(str(m+1), str(len(split_data))))
     return keypoints
 
 def load_list_to_pid(list_file, data_folder, path_tail_len=2):
@@ -122,20 +122,33 @@ if __name__ == "__main__":
     ap.add_argument("--gpu_count", type=int, help="count of gpu", default=1)
     ap.add_argument("--batch_size", type=int, help="batch_size in detection", default=64)
     ap.add_argument("--start_line", type=int, help="line to start", default=0)
-    ap.add_argument("--last_line", type=int, help="last line to process", default=300000)
+    ap.add_argument("--last_line", type=int, help="last line to process", default=30000000)
     ap.add_argument("--sample_size", type=int, help="num per track", default=8)
+    ap.add_argument("--pid_dict_file", type=str, help="temp file of pids in pickle", default='/tmp/pid_dict.pkl')
     args = ap.parse_args()
-    pid_data = load_list_to_pid(args.index_file, args.data_folder)
+
+    if not os.path.isfile(args.pid_dict_file):
+        pid_data = load_list_to_pid(args.index_file, args.data_folder)
+        with open(args.pid_dict_file, 'wb') as fp:
+            pickle.dump(pid_data, fp, protocol=pickle.HIGHEST_PROTOCOL)
+        print('pid dict saved to {}'.format(args.pid_dict_file))
+    else:
+        print('pid dict being loaded from {}'.format(args.pid_dict_file))
+        with open(args.pid_dict_file, 'rb') as fp:
+            pid_data = pickle.load(fp)
     pids = pid_data.keys()
 
     inference_config = dependency.InferenceConfig()
     inference_config.GPU_COUNT = args.gpu_count
     inference_config.BATCH_SIZE = args.batch_size
     print("detect keypoints with {} gpus and batch size of {}".format(str(args.gpu_count), str(args.batch_size)))
+    print("detect keypoints of {} to {} of total {}".format(str(args.start_line), str(args.last_line), str(len(pids))))
     model = maskrcnn.load_model(args.model_path, args.output_folder, inference_config)
 
-    keypoints = get_key_points_in_split(model, pid_data, args.data_folder, pids, batch_size=args.batch_size)
-    output_file = os.path.join(args.output_folder, 'keypoints.pkl')
+    pids_split = pids[args.start_line:args.last_line]
+
+    keypoints = get_key_points_in_split(model, pid_data, args.data_folder, pids_split, batch_size=args.batch_size)
+    output_file = os.path.join(args.output_folder, str(args.start_line)+'_'+str(args.last_line)+'_keypoints.pkl')
     if os.path.isdir(args.output_folder) == False:
         os.makedirs(args.output_folder)
     with open(output_file, 'wb') as fp:
