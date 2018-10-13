@@ -20,7 +20,7 @@ import pickle
 
 def process_one_folder(model, folder, norm_shape=(128,256), w_count=8, h_count=4, force_compute=False):
     folder_only = os.path.basename(os.path.normpath(folder))
-    kp_file = os.path.join(folder, folder_only+'_keypoints.pkl')
+    kp_file = os.path.join(folder, folder_only+'_keypoints.jkl')
     if os.path.isfile(kp_file) and (not force_compute):
         print("keypoints results {} exists. skip it.".format(kp_file))
         return
