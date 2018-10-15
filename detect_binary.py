@@ -55,10 +55,10 @@ def get_key_points_in_split(model, split_data, data_folder, keys, batch_size=8, 
             data_file = os.path.join(data_folder,file_name)
             if not os.path.isfile(data_file):
                 print('fail to load data file {}'.format(data_file))
-                continue
-            image = data_binary.read_one_image(data_file, offset)
-            image = cv2.resize(image, norm_shape)
-            images.append(image)
+            else:
+                image = data_binary.read_one_image(data_file, offset)
+                image = cv2.resize(image, norm_shape)
+                images.append(image)
             if len(images) == w_count*h_count or i==len(line)-1:
                 collage = collage_images(images, w_count, h_count)
                 collages.append(collage)
@@ -67,8 +67,8 @@ def get_key_points_in_split(model, split_data, data_folder, keys, batch_size=8, 
             # put w_count*h_count crops in one collage and detect keypoints. decode the keypoints to the xy in each crop afterwards
             # ignore the tail crops less than batch_size
             if len(collages) >= batch_size or i==len(line)-1:
-                if len(collages)<batch_size:
-                    collages = collages + [numpy.zeros(collages[0].shape, dtype=numpy.uint8) for _ in range(batch_size-len(collages))]
+                #if len(collages)<batch_size:
+                #    collages = collages + [numpy.zeros(collages[0].shape, dtype=numpy.uint8) for _ in range(batch_size-len(collages))]
                 keypoints_on_collages = maskrcnn.detect_keypoints_images(model, numpy.array(collages))
                 batch_len = len(collages)
 
